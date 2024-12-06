@@ -5,7 +5,7 @@ from discord import app_commands
 from dotenv import load_dotenv
 
 # Import des fonctions des différents types de tickets
-from commands.ticket_types.tiktok import Tiktok
+from commands.ticket_types.social import Social
 from commands.ticket_types.ban import Ban
 from commands.ticket_types.buy_ticket import BuyTicket
 
@@ -38,8 +38,8 @@ class ServiceSelect(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         choice = self.values[0]
-        if choice == "tiktok":
-            await Tiktok(interaction)
+        if choice == "social":
+            await Social(interaction)
         elif choice == "ban":
             await Ban(interaction)
         elif choice == "ticket":

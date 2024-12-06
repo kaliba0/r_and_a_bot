@@ -18,6 +18,8 @@ async def setup_hook():
     await bot.load_extension("commands.embed")
     await bot.load_extension("commands.clear")
     await bot.load_extension("commands.tickets")
+    await bot.load_extension("commands.close_ticket")
+
     await bot.tree.sync()
     print("Extensions chargées et commandes synchronisées.")
 
