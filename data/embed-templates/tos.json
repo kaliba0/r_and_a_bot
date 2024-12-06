@@ -1,0 +1,51 @@
+{
+    "title": "Terms Of Sales",
+    "color": "#000000",
+    "fields": [
+        {
+            "name": "• You must adhere to the Terms of Service of Discord and Supercell above",
+            "value": " "
+        },
+        {
+            "name": "• We do not tolerate harassment, racism, islamophobia etc",
+            "value": " "
+        },
+        {
+            "name": "• You must express yourself using appropriate, respectful language without any vulgarities",
+            "value": " "
+        },
+        {
+            "name": "• Your username, profile picture, or status must not be inappropriate or offensive",
+            "value": " "
+        },
+        {
+            "name": "• Advertising is prohibited on our server and in private messages to our members",
+            "value": " "
+        },
+        {
+            "name": "• Discussions on political, illegal, or pornographic topics are prohibited",
+            "value": " "
+        },
+        {
+            "name": "• Spamming, encouraging spam, and flooding are forbidden",
+            "value": " "
+        },
+        {
+            "name": "• Moderators have the final say; listen to and respect their decisions",
+            "value": " "
+        },
+        {
+            "name": "• Refunds are not possible (if necessary, we can provide you another product)",
+            "value": " "
+        },
+        {
+            "name": " ",
+            "value": "Thanks again for trusting us 🧡"
+        }
+    ],
+    "image": "https://cdn.discordapp.com/attachments/1267140283611611258/1307098808903012444/113E567F-E6B5-4E1B-BD7B-B974E9F339D2.jpg",
+    "footer": {
+        "text": "|  Rafaaa & Antterzn",
+        "icon_url": "https://cdn.discordapp.com/attachments/1267140283611611258/1307098808903012444/113E567F-E6B5-4E1B-BD7B-B974E9F339D2.jpg"
+    }
+}
