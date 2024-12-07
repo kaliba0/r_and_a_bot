@@ -7,12 +7,17 @@ from typing import Dict
 from dotenv import load_dotenv
 from datetime import datetime
 
-
 load_dotenv()
 
 logs_channel_id = int(os.getenv("LOGS_ID"))
+paypal_channel_id = int(os.getenv("PAYPAL_CHANNEL_ID"))
 PRICES_FILE = "data/prices.json"
 
+paypal_email = 'rafaaa.antterzn.shop@gmail.com'
+
+# Dictionary to store ticket information for logging screenshots
+# Key: channel_id, Value: dict with 'user_id', 'service_display', 'price'
+ticket_info = {}
 
 def load_prices():
     if not os.path.isfile(PRICES_FILE):
@@ -20,9 +25,7 @@ def load_prices():
     with open(PRICES_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
 
-
 prices_data = load_prices()
-
 
 def get_price(platform: str, service: str, quantity: int):
     if platform not in prices_data:
@@ -55,11 +58,10 @@ def get_price(platform: str, service: str, quantity: int):
     if lower_price is None or upper_price is None:
         return None
 
-    # Interpolation linéaire
+    # Linear interpolation
     ratio = (quantity - lower_tier) / (upper_tier - lower_tier)
     interpolated_price = lower_price + (upper_price - lower_price) * ratio
     return interpolated_price
-
 
 class ContactSupportView(View):
     def __init__(self, admin_role_id: int, user: discord.Member, service_display: str, ticket_channel: discord.TextChannel):
@@ -73,31 +75,55 @@ class ContactSupportView(View):
     async def contact_support(self, interaction: discord.Interaction, button: Button):
         channel = interaction.channel
 
-        # Donner la permission d'envoyer des messages à l'utilisateur
+        # Allow the user to send messages now
         overwrites = channel.overwrites_for(self.user)
         overwrites.send_messages = True
+        # By default, allow attachments if needed later
+        overwrites.attach_files = True
         await channel.set_permissions(self.user, overwrite=overwrites)
 
-        # Réponse dans le ticket
+        # Response in the ticket
         await interaction.response.send_message(
             f"Staff members have been noticed! You will receive help soon.",
             ephemeral=False
         )
 
-        # Désactiver le bouton après utilisation
-        for child in self.children:
-            child.disabled = True
+        # Disable the Contact Support button after use
+        self.contact_support.disabled = True
         await interaction.edit_original_response(view=self)
 
-        # Logs : Ping admins dans le channel logs
+        # Logs: Ping admins in the logs channel
         logs_channel = interaction.guild.get_channel(int(logs_channel_id))
         admin_mention = f"<@&{self.admin_role_id}>"
         if logs_channel:
             log_embed = discord.Embed(
                 color=0x000000,
-                description=f"{admin_mention} **Support requested** by {self.user.name} for {self.service_display}.\nTicket: {self.ticket_channel.mention} {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+                description=(
+                    f"```**Support requested** by {self.user.name} for {self.service_display}```.\n"
+                    f"Ticket: {self.ticket_channel.mention}   {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
                 )
-            await logs_channel.send(embed=log_embed)
+            )
+            await logs_channel.send(content=admin_mention, embed=log_embed)
+
+    @discord.ui.button(label="Send the screenshot", style=ButtonStyle.success, custom_id="send_screenshot")
+    async def send_screenshot(self, interaction: discord.Interaction, button: Button):
+        channel = interaction.channel
+
+        # Set permissions so the user can send attachments but not messages
+        overwrites = channel.overwrites_for(self.user)
+        overwrites.send_messages = True
+        overwrites.attach_files = True
+        await channel.set_permissions(self.user, overwrite=overwrites)
+
+        # Notify the user
+        await interaction.response.send_message(
+            "You can now send your screenshot as an attachment. Once sent, a staff member will handle your request",
+            ephemeral=True
+        )
+
+        # Disable the Send the screenshot button after use
+        self.send_screenshot.disabled = True
+        await interaction.edit_original_response(view=self)
 
 
 class QuantityModal(Modal):
@@ -118,7 +144,7 @@ class QuantityModal(Modal):
         self.add_item(self.quantity)
 
     async def on_submit(self, interaction: discord.Interaction):
-        await interaction.response.defer(ephemeral=True)  # Prévenir Discord que l'interaction prend du temps
+        await interaction.response.defer(ephemeral=True)
         quantity_str = self.quantity.value
         if not quantity_str.isdigit():
             await interaction.followup.send("Please enter a valid number.", ephemeral=True)
@@ -126,7 +152,7 @@ class QuantityModal(Modal):
         quantity = int(quantity_str)
 
         parts = self.service_key.split("_", 1)
-        platform = parts[0]  # tiktok ou insta
+        platform = parts[0]  # tiktok or insta
         full_service = parts[1]  # followers, likes, views
 
         price_value = get_price(platform, full_service, quantity)
@@ -136,44 +162,63 @@ class QuantityModal(Modal):
 
         price_str = f"{price_value:.2f}€"
 
-        # Renommer le canal
+        # Rename the channel
         prefix = "tt" if platform == "tiktok" else "insta"
         service_short = full_service
         new_name = f"{prefix}-{service_short}-{self.user.name}"
         await self.ticket_channel.edit(name=new_name)
 
-        recap_embed = discord.Embed(
-            color=0xf300ff,
-            title="Ticket Summary",
-        )
         service_display = f"{platform.title()} {full_service.title()}"
-        recap_embed.add_field(name="Service", value=service_display, inline=True)
-        recap_embed.add_field(name="Quantity", value=str(quantity), inline=True)
-        recap_embed.add_field(name="Price", value=price_str, inline=True)
-        recap_embed.set_footer(text=f"|  Ticket opened by {self.user.name}")
+        recap_embed = discord.Embed(
+            color=0x000000,
+            title="**__ORDER SUMMARY__**",
+            description=f"```{str(quantity)}{service_display} | {price_str}```\n\u200b",
+        )
+        
+        recap_embed.add_field(
+            name="__PAYMENT__",
+            value=(
+                f"Please send {price_str} to : **```{paypal_email}```**\n"
+                f"**Before sending the money, read carefully the instructions in the <#{paypal_channel_id}> channel.**"
+            ),
+            inline=False
+        )
 
-        # Envoi de l'embed + bouton "Contact Support"
+        recap_embed.set_footer(text=f"|  Ticket opened by {self.user.name} on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", icon_url="https://cdn.discordapp.com/attachments/1267140283611611258/1307098808903012444/113E567F-E6B5-4E1B-BD7B-B974E9F339D2.jpg")
+
+        # Send the embed + "Contact Support" + "Send the screenshot" buttons
         recap_message = await self.ticket_channel.send(
-            content=f"<@&{self.admin_role_id}> <@{self.user.id}>",
+            content=f"<@&{self.admin_role_id}>",
             embed=recap_embed,
             view=ContactSupportView(self.admin_role_id, self.user, service_display, self.ticket_channel)
         )
 
-        # Suppression de tous les autres messages sauf le récap
+        # Purge all other messages except the recap
         def check_msg(m):
             return m.id != recap_message.id
 
         await self.ticket_channel.purge(check=check_msg)
 
-        # Logs : Embeds court dans le channel de logs
+        # Store ticket info for screenshot logging
+        ticket_info[self.ticket_channel.id] = {
+            'user_id': self.user.id,
+            'service_display': service_display,
+            'price': price_str
+        }
+
+        # Logs: Short embed in the logs channel
         logs_channel = interaction.guild.get_channel(int(logs_channel_id))
         if logs_channel:
             log_embed = discord.Embed(
                 color=0x000000,
-                description=f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} **New Ticket Created** ```{self.user.name} | {service_display} | {price_str}```",
+                description=(
+                    f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}   **New Ticket Created** "
+                    f"```{self.user.name} | {service_display} | {price_str}```\n"
+                    f"Channel: {self.ticket_channel.mention}"
+                ),
             )
             await logs_channel.send(embed=log_embed)
-            
+
 
 class ServiceSelectMenu(Select):
     def __init__(self, admin_role_id: int, tickets_cat_id: str, ticket_channel: discord.TextChannel, user: discord.Member):
@@ -203,12 +248,10 @@ class ServiceSelectMenu(Select):
         modal = QuantityModal(service_key, self.admin_role_id, self.tickets_cat_id, self.ticket_channel, self.user)
         await interaction.response.send_modal(modal)
 
-
 class ServiceSelectView(View):
     def __init__(self, admin_role_id: int, tickets_cat_id: str, ticket_channel: discord.TextChannel, user: discord.Member):
-        super().__init__(timeout=60)  # Timeout de 60 secondes
+        super().__init__(timeout=60)
         self.add_item(ServiceSelectMenu(admin_role_id, tickets_cat_id, ticket_channel, user))
-
 
 async def Social(interaction: discord.Interaction):
     admin_role_id = interaction.client.ADMIN_ROLE_ID
@@ -223,7 +266,7 @@ async def Social(interaction: discord.Interaction):
 
     overwrites = {
         guild.default_role: discord.PermissionOverwrite(view_channel=False),
-        user: discord.PermissionOverwrite(view_channel=True, send_messages=False, read_message_history=True),
+        user: discord.PermissionOverwrite(view_channel=True, send_messages=False, read_message_history=True, attach_files=False),
         discord.Object(id=admin_role_id): discord.PermissionOverwrite(view_channel=True, send_messages=True, read_message_history=True)
     }
 
@@ -234,8 +277,9 @@ async def Social(interaction: discord.Interaction):
     )
 
     view = ServiceSelectView(admin_role_id, tickets_cat_id, ticket_channel, user)
+    emoji = "<:loading:1314701526614282271>"
     await ticket_channel.send(
-        "<:loading:1314701526614282271> Please select the desired service from the menu below:",
+        f"{emoji} {user.mention} Please select the desired service from the menu below:",
         view=view
     )
 
@@ -243,3 +287,30 @@ async def Social(interaction: discord.Interaction):
         f"Your ticket has been created here: <#{ticket_channel.id}>. Thanks a lot for your order!",
         ephemeral=True
     )
+
+
+# Event listener for when a user sends a message with an attachment in a ticket channel
+# We assume we have access to a bot instance. Modify as needed if integrated differently.
+# This code expects that it's integrated into a bot with on_message event.
+# If you already have a Cog or main file, integrate this there.
+
+async def on_message(message: discord.Message):
+    if message.author.bot:
+        return
+    if message.channel.id in ticket_info:
+        # Check if user matches the ticket owner
+        info = ticket_info[message.channel.id]
+        if message.author.id == info['user_id'] and len(message.attachments) > 0:
+            # Log that a screenshot was sent
+            guild = message.guild
+            logs_channel = guild.get_channel(logs_channel_id)
+            if logs_channel:
+                log_embed = discord.Embed(
+                    color=0x000000,
+                    description=(
+                        f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} **Screenshot received** in {message.channel.mention}\n"
+                        f"User: {message.author.name}\n"
+                        f"Service: {info['service_display']} | Price: {info['price']}"
+                    )
+                )
+                await logs_channel.send(embed=log_embed)

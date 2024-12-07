@@ -1,7 +1,6 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from datetime import datetime
 import os
 
 
@@ -13,29 +12,15 @@ class CloseTicket(commands.Cog):
     @app_commands.checks.has_permissions(manage_channels=True)
     async def close_ticket(self, interaction: discord.Interaction):
         channel = interaction.channel
-        category = channel.category
+        tickets_cat_id = int(os.getenv("TICKETS_CAT_ID"))
 
         # Vérifiez si le channel est dans la catégorie des tickets
-        if not category or "ticket" not in category.name.lower():
+        if not channel.category or channel.category.id != tickets_cat_id:
             await interaction.response.send_message(
-                "This command can only be used in a ticket channel.",
+                "This command can only be used in a ticket channel under the Tickets category.",
                 ephemeral=True
             )
             return
-
-        # Logs : Log de fermeture dans le salon des logs
-        logs_channel = interaction.guild.get_channel(int(os.getenv("LOGS_ID")))
-        if logs_channel:
-            log_embed = discord.Embed(
-                color=0xff0000,
-                title="Ticket Closed",
-                description=(
-                    f"Ticket {channel.name} has been closed.\n"
-                    f"Closed by: {interaction.user.mention}\n"
-                    f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-                )
-            )
-            await logs_channel.send(embed=log_embed)
 
         # Supprimer le channel
         await channel.delete(reason=f"Ticket closed by {interaction.user.name}.")
