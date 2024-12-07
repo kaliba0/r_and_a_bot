@@ -75,10 +75,9 @@ class ContactSupportView(View):
     async def contact_support(self, interaction: discord.Interaction, button: Button):
         channel = interaction.channel
 
-        # Allow the user to send messages now
+        # Allow the user to send messages & attachments now
         overwrites = channel.overwrites_for(self.user)
         overwrites.send_messages = True
-        # By default, allow attachments if needed later
         overwrites.attach_files = True
         await channel.set_permissions(self.user, overwrite=overwrites)
 
@@ -99,7 +98,7 @@ class ContactSupportView(View):
             log_embed = discord.Embed(
                 color=0x000000,
                 description=(
-                    f"```**Support requested** by {self.user.name} for {self.service_display}```.\n"
+                    f"```Support requested by {self.user.name} for {self.service_display}```.\n"
                     f"Ticket: {self.ticket_channel.mention}   {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
                 )
             )
@@ -109,7 +108,7 @@ class ContactSupportView(View):
     async def send_screenshot(self, interaction: discord.Interaction, button: Button):
         channel = interaction.channel
 
-        # Set permissions so the user can send attachments but not messages
+        # Set permissions so the user can send both messages and attachments
         overwrites = channel.overwrites_for(self.user)
         overwrites.send_messages = True
         overwrites.attach_files = True
@@ -117,7 +116,7 @@ class ContactSupportView(View):
 
         # Notify the user
         await interaction.response.send_message(
-            "You can now send your screenshot as an attachment. Once sent, a staff member will handle your request",
+            "You can now send your screenshot and/or message. Once sent, a staff member will handle your request.",
             ephemeral=True
         )
 
@@ -212,9 +211,8 @@ class QuantityModal(Modal):
             log_embed = discord.Embed(
                 color=0x000000,
                 description=(
-                    f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}   **New Ticket Created** "
-                    f"```{self.user.name} | {service_display} | {price_str}```\n"
-                    f"Channel: {self.ticket_channel.mention}"
+                    f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} \u200b \u200b \u200b \u200b \u200b{self.ticket_channel.mention}"
+                    f"```{self.user.name} | {service_display} | {price_str}```"
                 ),
             )
             await logs_channel.send(embed=log_embed)
@@ -287,30 +285,3 @@ async def Social(interaction: discord.Interaction):
         f"Your ticket has been created here: <#{ticket_channel.id}>. Thanks a lot for your order!",
         ephemeral=True
     )
-
-
-# Event listener for when a user sends a message with an attachment in a ticket channel
-# We assume we have access to a bot instance. Modify as needed if integrated differently.
-# This code expects that it's integrated into a bot with on_message event.
-# If you already have a Cog or main file, integrate this there.
-
-async def on_message(message: discord.Message):
-    if message.author.bot:
-        return
-    if message.channel.id in ticket_info:
-        # Check if user matches the ticket owner
-        info = ticket_info[message.channel.id]
-        if message.author.id == info['user_id'] and len(message.attachments) > 0:
-            # Log that a screenshot was sent
-            guild = message.guild
-            logs_channel = guild.get_channel(logs_channel_id)
-            if logs_channel:
-                log_embed = discord.Embed(
-                    color=0x000000,
-                    description=(
-                        f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} **Screenshot received** in {message.channel.mention}\n"
-                        f"User: {message.author.name}\n"
-                        f"Service: {info['service_display']} | Price: {info['price']}"
-                    )
-                )
-                await logs_channel.send(embed=log_embed)

@@ -11,6 +11,9 @@ intents = discord.Intents.default()
 intents.guilds = True
 intents.messages = True
 intents.message_content = True
+intents.guild_messages = True
+intents.guild_reactions = True
+intents.members = True
 
 bot = commands.Bot(command_prefix="/", intents=intents)
 

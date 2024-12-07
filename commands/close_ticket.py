@@ -25,6 +25,14 @@ class CloseTicket(commands.Cog):
         # Supprimer le channel
         await channel.delete(reason=f"Ticket closed by {interaction.user.name}.")
 
+    @close_ticket.error
+    async def close_ticket_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
+        if isinstance(error, app_commands.MissingPermissions):
+            await interaction.response.send_message(
+                "You do not have permission to use this command.",
+                ephemeral=True
+            )
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(CloseTicket(bot))
