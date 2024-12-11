@@ -9,6 +9,7 @@ from commands.ticket_types.social import Social
 from commands.ticket_types.ban import Ban
 from commands.ticket_types.buy_ticket import BuyTicket
 from commands.ticket_types.game_boost import GameBoost
+from commands.ticket_types.accounts import GameAccounts
 
 load_dotenv()
 
@@ -23,9 +24,10 @@ class ServiceSelect(discord.ui.Select):
         options = [
             discord.SelectOption(label="BUY TICKET", value="ticket", description="N1tr0, Serv B00sts, Movies, Ban, ...", emoji="<:nitro:1314612126375219271>"),
             discord.SelectOption(label="SOCIAL BOOST", value="social", description="Inst4/T1kt0k followers, views, likes, ...", emoji="<:tikotk:1314611766390558802>"),
-            discord.SelectOption(label="GAME BOOST", value="game", description="BrawlPass +, Brawl Stars tiermax, ranked ranks, ...", emoji="<:bpass:1315308421645598832>"),
+            discord.SelectOption(label="GAME BOOST", value="game", description="BrawlPass +, V-Bucks, Brawl Stars tiermax, ranked ranks, ...", emoji="<:bpass:1315308421645598832>"),
             discord.SelectOption(label="GAME ACCOUNTS", value="accounts", description="Buy/Sell Brawl Stars, Fortnite accounts", emoji="<:paypal:1314613384544653332>"),
-            discord.SelectOption(label="H4CK3R/DEV", value="dev", emoji="<:hacker:1314612811313446923>", description="App, bot, software development"),
+            discord.SelectOption(label="DEVELOPPER", value="dev", emoji="<:hacker:1314612811313446923>", description="App, bot, software development"),
+            discord.SelectOption(label="MIDDLEMAN SERVICES", value="middleman", emoji="<:shield:1316403085773639762>", description="Get a trusted middleman to secure your transactions"),
             discord.SelectOption(label="CONTACT SUPPORT", value="support", emoji="<:settings:1314619831651274844>", description="In case of issue or question"),
         ]
 
@@ -45,6 +47,8 @@ class ServiceSelect(discord.ui.Select):
             await GameBoost(interaction)
         elif choice == "ticket":
             await BuyTicket(interaction)
+        elif choice == "accounts":
+            await GameAccounts(interaction)
         else:
             await interaction.response.send_message("Incorrect Input", ephemeral=True)
 

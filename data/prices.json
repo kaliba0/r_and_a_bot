@@ -1,5 +1,5 @@
 {
-  "ltc_address": "ltc1qxyz123abc...",
+  "ltc_address": "LaLtFvh7aosGYXUcH8agvbowo8Ua3WQUPJ",
   "tiktok": {
     "followers": {
       "1000": 3.00,
@@ -78,11 +78,11 @@
     "brawlpass +": {
       "1": 8.50
     },
-    "tier max": {
-      "1": 25.00
+    "v-bucks": {
+      "1": 0.0055
     },
-    "ranked ranks": {
-      "1": 25.00
+    "robux": {
+      "1": 0.005
     }
   }
 }

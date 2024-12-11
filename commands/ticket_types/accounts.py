@@ -10,25 +10,9 @@ from typing import Dict
 load_dotenv()
 logs_channel_id = int(os.getenv("LOGS_ID"))
 payment_channel_id = int(os.getenv("PAYMENT_CHANNEL_ID"))
-PRICES_FILE = "data/prices.json"
+# No price needed for now, so we won't load any price data
 paypal_email = 'rafaaa.antterzn.shop@gmail.com'
 ticket_info = {}
-
-if not os.path.isfile(PRICES_FILE):
-    raise FileNotFoundError(f"Prices file {PRICES_FILE} not found.")
-with open(PRICES_FILE, "r", encoding="utf-8") as f:
-    prices_data = json.load(f)
-
-ltc_address = prices_data["ltc_address"]
-
-def get_price(category: str, service: str, quantity: int):
-    if category not in prices_data or service not in prices_data[category]:
-        return None
-    service_prices = prices_data[category][service]
-    if "1" not in service_prices or service_prices["1"] is None:
-        return None
-    unit_price = service_prices["1"] 
-    return unit_price * quantity 
 
 class ContactSupportView(View):
     def __init__(self, admin_role_id: int, user: discord.Member, service_display: str, ticket_channel: discord.TextChannel):
@@ -63,51 +47,42 @@ class ContactSupportView(View):
         self.send_screenshot.disabled = True
         await interaction.edit_original_response(view=self)
 
-class QuantityModal(Modal):
+
+class GameModal(Modal):
     def __init__(self, service_name: str, admin_role_id: int, ticket_channel: discord.TextChannel, user: discord.Member):
-        super().__init__(title=f"Enter the desired quantity for {service_name}")
+        super().__init__(title=f"On what game ?")
         self.service_name = service_name
         self.admin_role_id = admin_role_id
         self.ticket_channel = ticket_channel
         self.user = user
-        self.quantity = TextInput(label="Quantity", style=TextStyle.short, required=True, placeholder="Ex: 1, 1000")
-        self.add_item(self.quantity)
+        self.game = TextInput(label="Game Name", style=TextStyle.short, required=True, placeholder="Ex: Fortnite, BrawlStars")
+        self.add_item(self.game)
 
     async def on_submit(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
-        if not self.quantity.value.isdigit():
-            await interaction.followup.send("Please enter a valid number.", ephemeral=True)
-            return
-        q = int(self.quantity.value)
-        price_val = get_price("game_boost", self.service_name, q)
-        if price_val is None:
-            await interaction.followup.send("This quantity is unavailable. Please try another quantity.", ephemeral=True)
-            return
-        price_str = f"{price_val:.2f}€"
+        game_name = self.game.value.strip()
         short_name = self.service_name.replace(" ", "")
-        await self.ticket_channel.edit(name=f"game-{short_name}-{self.user.name}")
+        await self.ticket_channel.edit(name=f"acc-{short_name}-{self.user.name}")
         service_display = self.service_name.title()
 
-        embed = discord.Embed(color=0x000000, title="**__ORDER SUMMARY__**", description=f"```{q}x {service_display} | {price_str}```\n\u200b")
-        embed.add_field(name="__PAYMENT__", value=(
-            f"Please send **{price_str}** by PayPal to : **```{paypal_email}```**\n"
-            f"**Or by LTC to :** ```{ltc_address}```\n"
-            f"**Before sending the money, read carefully the instructions in the <#{payment_channel_id}> channel.**"
-        ), inline=False)
+        embed = discord.Embed(color=0x000000, title="**__ORDER SUMMARY__**", description=f"```Service: {service_display} | {game_name}```")
         embed.set_footer(text=f"|  Ticket opened by {self.user.name} on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", icon_url="https://cdn.discordapp.com/attachments/1267140283611611258/1307098808903012444/113E567F-E6B5-4E1B-BD7B-B974E9F339D2.jpg")
 
         recap = await self.ticket_channel.send(content=f"<@&{self.admin_role_id}>", embed=embed, view=ContactSupportView(self.admin_role_id, self.user, service_display, self.ticket_channel))
         def check_msg(m): return m.id != recap.id
         await self.ticket_channel.purge(check=check_msg)
-        ticket_info[self.ticket_channel.id] = {'user_id': self.user.id, 'service_display': service_display, 'price': price_str}
+        ticket_info[self.ticket_channel.id] = {'user_id': self.user.id, 'service_display': service_display, 'game': game_name}
 
         logs_channel = interaction.guild.get_channel(logs_channel_id)
         if logs_channel:
             log_embed = discord.Embed(color=0x000000, description=(
                 f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}     {self.ticket_channel.mention}"
-                f"```{self.user.name} | {service_display} | {price_str}```"
+                f"```{self.user.name} | {service_display} | {game_name}```"
             ))
             await logs_channel.send(embed=log_embed)
+
+        await interaction.followup.send("Your request has been processed! Please follow the instructions in the ticket channel.", ephemeral=True)
+
 
 class ServiceSelectMenu(Select):
     def __init__(self, admin_role_id: int, tickets_cat_id: str, ticket_channel: discord.TextChannel, user: discord.Member):
@@ -116,23 +91,23 @@ class ServiceSelectMenu(Select):
         self.ticket_channel = ticket_channel
         self.user = user
         options = [
-            discord.SelectOption(label="BrawlPass +", value="brawlpass +", description="Buy BrawlPass +", emoji="<:bpass:1315308421645598832>"),
-            discord.SelectOption(label="V-Bucks", value="v-bucks", description="Get Fortnite V-Bucks", emoji="<:vbucks:1316409364743196723>"),
-            discord.SelectOption(label="Robux", value="robux", description="Get Roblox Robux", emoji="<:robux:1316409326411321354>")
+            discord.SelectOption(label="Sell an account", value="sell an account", description="Sell a game account", emoji="<:arrowright:1316414550546845861>"),
+            discord.SelectOption(label="Buy an account", value="buy an account", description="Buy a game account", emoji="<:arrowleft:1316414511502327859>")
         ]
-        super().__init__(placeholder="Select a game boost...", min_values=1, max_values=1, options=options)
+        super().__init__(placeholder="Select an account service...", min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
         product = self.values[0]
-        # QuantityModal is used for all these options
-        await interaction.response.send_modal(QuantityModal(product, self.admin_role_id, self.ticket_channel, self.user))
+        await interaction.response.send_modal(GameModal(product, self.admin_role_id, self.ticket_channel, self.user))
+
 
 class ServiceSelectView(View):
     def __init__(self, admin_role_id: int, tickets_cat_id: str, ticket_channel: discord.TextChannel, user: discord.Member):
         super().__init__(timeout=60)
         self.add_item(ServiceSelectMenu(admin_role_id, tickets_cat_id, ticket_channel, user))
 
-async def GameBoost(interaction: discord.Interaction):
+
+async def GameAccounts(interaction: discord.Interaction):
     admin_role_id, tickets_cat_id = interaction.client.ADMIN_ROLE_ID, interaction.client.TICKETS_CAT_ID
     guild, user = interaction.guild, interaction.user
     category = guild.get_channel(int(tickets_cat_id))
@@ -144,8 +119,8 @@ async def GameBoost(interaction: discord.Interaction):
         user: discord.PermissionOverwrite(view_channel=True, send_messages=False, read_message_history=True, attach_files=False),
         discord.Object(id=admin_role_id): discord.PermissionOverwrite(view_channel=True, send_messages=True, read_message_history=True)
     }
-    ticket_channel = await guild.create_text_channel(name=f"game-{user.name}", category=category, overwrites=overwrites)
+    ticket_channel = await guild.create_text_channel(name=f"acc-{user.name}", category=category, overwrites=overwrites)
     view = ServiceSelectView(admin_role_id, tickets_cat_id, ticket_channel, user)
     emoji = "<:loading:1314701526614282271>"
-    await ticket_channel.send(f"{emoji} {user.mention} Please select the desired game boost service from the menu below:", view=view)
-    await interaction.response.send_message(f"Your ticket has been created here: <#{ticket_channel.id}>. Thanks a lot for your order!", ephemeral=True)
+    await ticket_channel.send(f"{emoji} {user.mention} Please select the account service you want from the menu below:", view=view)
+    await interaction.response.send_message(f"Your ticket has been created here: <#{ticket_channel.id}>. Thanks a lot for your request!", ephemeral=True)
