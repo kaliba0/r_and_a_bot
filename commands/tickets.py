@@ -10,6 +10,9 @@ from commands.ticket_types.ban import Ban
 from commands.ticket_types.buy_ticket import BuyTicket
 from commands.ticket_types.game_boost import GameBoost
 from commands.ticket_types.accounts import GameAccounts
+from commands.ticket_types.support import SupportTicket
+from commands.ticket_types.developper import Developer
+from commands.ticket_types.middleman import Middleman
 
 load_dotenv()
 
@@ -49,6 +52,12 @@ class ServiceSelect(discord.ui.Select):
             await BuyTicket(interaction)
         elif choice == "accounts":
             await GameAccounts(interaction)
+        elif choice == "support":
+            await SupportTicket(interaction)
+        elif choice=="dev":
+            await Developer(interaction)
+        elif choice=="middleman":
+            await Middleman(interaction)
         else:
             await interaction.response.send_message("Incorrect Input", ephemeral=True)
 
