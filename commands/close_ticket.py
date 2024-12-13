@@ -13,9 +13,10 @@ class CloseTicket(commands.Cog):
     async def close_ticket(self, interaction: discord.Interaction):
         channel = interaction.channel
         tickets_cat_id = int(os.getenv("TICKETS_CAT_ID"))
+        battle_cat_id = int(os.getenv("1V1_CAT_ID"))
 
         # Vérifiez si le channel est dans la catégorie des tickets
-        if not channel.category or channel.category.id != tickets_cat_id:
+        if not channel.category or channel.category.id != tickets_cat_id or channel.category.id != battle_cat_id:
             await interaction.response.send_message(
                 "This command can only be used in a ticket channel under the Tickets category.",
                 ephemeral=True

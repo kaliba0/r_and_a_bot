@@ -38,7 +38,7 @@ async def Developer(interaction: discord.Interaction):
     instructions_msg = await ticket_channel.send(
         content=(
             f"{middleman_mention}\n"
-            f"{user.mention}, please send your request in this channel. Once you have sent your request, it will be processed."
+            f"<a:lding:1317221095715115089> {user.mention}, please send your request in this channel. Once you have sent your request, it will be processed."
         )
     )
 

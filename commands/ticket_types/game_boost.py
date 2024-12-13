@@ -146,6 +146,6 @@ async def GameBoost(interaction: discord.Interaction):
     }
     ticket_channel = await guild.create_text_channel(name=f"game-{user.name}", category=category, overwrites=overwrites)
     view = ServiceSelectView(admin_role_id, tickets_cat_id, ticket_channel, user)
-    emoji = "<:loading:1314701526614282271>"
+    emoji = "<a:lding:1317221095715115089>"
     await ticket_channel.send(f"{emoji} {user.mention} Please select the desired game boost service from the menu below:", view=view)
     await interaction.response.send_message(f"Your ticket has been created here: <#{ticket_channel.id}>. Thanks a lot for your order!", ephemeral=True)

@@ -88,33 +88,33 @@ class TicketsCog(commands.Cog):
         )
 
         embed.add_field(
-            name="**TICKETS <a:diams:1307450379339829401>**",
+            name="**TICKETS <a:diams:1317192167965327412>**",
             value=(
-                "**<a:tick3t:1307097309841985548> Open a Buy Ticket to Purchase a Product.\n"
-                "<a:bots:1307451427848851536> Open a Support ticket if you require Support by our Staff Team.\n\u200B**"
+                "**<a:tiket:1317192702345089134> Open a Buy Ticket to Purchase a Product.\n"
+                "<a:bot:1307451427848851536> Open a Support ticket if you require Support by our Staff Team.\n\u200B**"
             ),
             inline=False,
         )
 
         embed.add_field(
-            name="**SOCIAL BOOSTS <a:diams:1307450379339829401>**",
-            value="**<:tt:1307451521067126784> TikTok\n<:insta:1307451889729933424> Instagram\n\u200B**",
+            name="**SOCIAL BOOSTS <a:diams:1317192167965327412>**",
+            value="**<:tiktok:1317192232620527648> TikTok\n<:insta:1317192314501726299> Instagram\n\u200B**",
             inline=False,
         )
 
         embed.add_field(
-            name="**BRAWLSTARS <a:diams:1307450379339829401>**",
+            name="**BRAWLSTARS <a:diams:1317192167965327412>**",
             value=(
                 "**<:r35:1307121920851836948> Tier Max\n"
-                "<:MASTER:1275475265484488754> Ranked Ranks\n\u200B**"
+                "<:master:1278453619607343328> Ranked Ranks\n\u200B**"
             ),
             inline=False,
         )
 
         embed.add_field(
-            name="**H4CK3R/DEVELOPPER <a:diams:1307450379339829401>**",
+            name="**H4CK3R/DEVELOPPER <a:diams:1317192167965327412>**",
             value=(
-                "**<:hacker:1307420194343227412> h4ck a social media account or anything else\n"
+                "**<:hacker:1317222692553883790> h4ck a social media account or anything else\n"
                 ":computer: Create a bot/app/program\n"
                 ":prohibited: Ban any BrawlStars account**"
             ),
@@ -124,8 +124,8 @@ class TicketsCog(commands.Cog):
         embed.add_field(
             name="\u200B",
             value=(
-                "**<:infini:1307097682178740234> We are the fastest service ever\n"
-                "<:infini:1307097682178740234> If your Product is not in Stock, your Ticket will be closed**"
+                "**<:infini:1317192661777518592> We are the fastest service ever\n"
+                "<:infini:1317192661777518592> If your Product is not in Stock, your Ticket will be closed**"
             ),
             inline=False,
         )

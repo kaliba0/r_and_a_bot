@@ -228,6 +228,6 @@ async def BuyTicket(interaction: discord.Interaction):
     }
     ticket_channel = await guild.create_text_channel(name=f"product-{user.name}", category=category, overwrites=overwrites)
     view = ProductSelectView(admin_role_id, tickets_cat_id, ticket_channel, user)
-    emoji = "<:loading:1314701526614282271>"
+    emoji = "<a:lding:1317221095715115089>"
     await ticket_channel.send(f"{emoji} {user.mention} Please select the desired product from the menu below:", view=view)
     await interaction.response.send_message(f"Your ticket has been created here: <#{ticket_channel.id}>. Thanks a lot for your order!", ephemeral=True)
