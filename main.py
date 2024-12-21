@@ -24,6 +24,7 @@ async def setup_hook():
     await bot.load_extension("commands.close_ticket")
     await bot.load_extension("commands.paypal")
     await bot.load_extension("commands.1v1")
+    await bot.load_extension("commands.verify")
 
     await bot.tree.sync()
     print("Extensions chargées et commandes synchronisées.")

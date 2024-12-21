@@ -83,7 +83,7 @@ class TicketsCog(commands.Cog):
             return
 
         embed = discord.Embed(
-            color=0xf300ff,
+            color=0x000,
             title="Rafaaa's Shop 🛍\n\u200B",
         )
 
