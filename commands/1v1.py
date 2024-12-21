@@ -103,8 +103,8 @@ class Token1v1Cog(commands.Cog):
             "**A 10% fee will be applied.**\n"
             "**Anyone who doesn't follow the conditions will be instantly banned.**\n"
         )
-        embed.set_footer(text=f"Invoked by {interaction.user.name} on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        await interaction.response.send_message(embed=embed, view=LaunchView(interaction.user), ephemeral=True)
+        embed.set_footer(text=f"Invoked on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        await interaction.response.send_message(embed=embed, view=LaunchView(interaction.user))
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Token1v1Cog(bot))

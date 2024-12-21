@@ -116,9 +116,9 @@ class ServiceSelectMenu(Select):
         self.ticket_channel = ticket_channel
         self.user = user
         options = [
-            discord.SelectOption(label="BrawlPass +", value="brawlpass +", description="Buy BrawlPass +", emoji="<:bpass:1315308421645598832>"),
-            discord.SelectOption(label="V-Bucks", value="v-bucks", description="Get Fortnite V-Bucks", emoji="<:vbucks:1316409364743196723>"),
-            discord.SelectOption(label="Robux", value="robux", description="Get Roblox Robux", emoji="<:robux:1316409326411321354>")
+            discord.SelectOption(label="BrawlPass +", value="brawlpass +", description="Buy BrawlPass +", emoji="<:bpass:1320099475653398558>"),
+            discord.SelectOption(label="V-Bucks", value="v-bucks", description="Get Fortnite V-Bucks", emoji="<:vbuck:1320104205993771008>"),
+            discord.SelectOption(label="Robux", value="robux", description="Get Roblox Robux", emoji="<:robux:1320104244019335218>")
         ]
         super().__init__(placeholder="Select a game boost...", min_values=1, max_values=1, options=options)
 

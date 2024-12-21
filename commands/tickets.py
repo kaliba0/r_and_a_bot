@@ -25,13 +25,13 @@ class ServiceSelect(discord.ui.Select):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         options = [
-            discord.SelectOption(label="BUY TICKET", value="ticket", description="N1tr0, Serv B00sts, Movies, Ban, ...", emoji="<:nitro:1314612126375219271>"),
-            discord.SelectOption(label="SOCIAL BOOST", value="social", description="Inst4/T1kt0k followers, views, likes, ...", emoji="<:tikotk:1314611766390558802>"),
-            discord.SelectOption(label="GAME BOOST", value="game", description="BrawlPass +, V-Bucks, Brawl Stars tiermax, ranked ranks, ...", emoji="<:bpass:1315308421645598832>"),
-            discord.SelectOption(label="GAME ACCOUNTS", value="accounts", description="Buy/Sell Brawl Stars, Fortnite accounts", emoji="<:paypal:1314613384544653332>"),
-            discord.SelectOption(label="DEVELOPPER", value="dev", emoji="<:hacker:1314612811313446923>", description="App, bot, software development"),
-            discord.SelectOption(label="MIDDLEMAN SERVICES", value="middleman", emoji="<:shield:1316403085773639762>", description="Get a trusted middleman to secure your transactions"),
-            discord.SelectOption(label="CONTACT SUPPORT", value="support", emoji="<:settings:1314619831651274844>", description="In case of issue or question"),
+            discord.SelectOption(label="BUY TICKET", value="ticket", description="N1tr0, Serv B00sts, Movies, Ban, ...", emoji="<a:nitro:1320099432234225674>"),
+            discord.SelectOption(label="SOCIAL BOOST", value="social", description="Inst4/T1kt0k followers, views, likes, ...", emoji="<:tiktok:1320099361069203487>"),
+            discord.SelectOption(label="GAME BOOST", value="game", description="BrawlPass +, V-Bucks, Brawl Stars tiermax, ranked ranks, ...", emoji="<:bpass:1320099475653398558>"),
+            discord.SelectOption(label="GAME ACCOUNTS", value="accounts", description="Buy/Sell Brawl Stars, Fortnite accounts", emoji="<:paypal:1320099594851586069>"),
+            discord.SelectOption(label="DEVELOPPER", value="dev", emoji="<:hacker:1320099658571448390>", description="App, bot, software development"),
+            discord.SelectOption(label="MIDDLEMAN SERVICES", value="middleman", emoji="<:shield:1320099722651766895>", description="Get a trusted middleman to secure your transactions"),
+            discord.SelectOption(label="CONTACT SUPPORT", value="support", emoji="<a:settings:1320099766394421280>", description="In case of issue or question"),
         ]
 
         super().__init__(
@@ -91,7 +91,7 @@ class TicketsCog(commands.Cog):
             name="**TICKETS <a:diams:1317192167965327412>**",
             value=(
                 "**<a:tiket:1317192702345089134> Open a Buy Ticket to Purchase a Product.\n"
-                "<a:bot:1307451427848851536> Open a Support ticket if you require Support by our Staff Team.\n\u200B**"
+                "<a:bot:1317192345367609394> Open a Support ticket if you require Support by our Staff Team.\n\u200B**"
             ),
             inline=False,
         )
@@ -105,8 +105,7 @@ class TicketsCog(commands.Cog):
         embed.add_field(
             name="**BRAWLSTARS <a:diams:1317192167965327412>**",
             value=(
-                "**<:r35:1307121920851836948> Tier Max\n"
-                "<:master:1278453619607343328> Ranked Ranks\n\u200B**"
+                "**<:r35:1307121920851836948> Tier Max\n<:master:1318743158552531036> Ranked Ranks\n\u200B**"
             ),
             inline=False,
         )
@@ -138,7 +137,7 @@ class TicketsCog(commands.Cog):
         view = ServiceSelectView(self.bot)
 
         # Envoi du message embed et suppression de la réponse slash
-        await interaction.response.defer(ephemeral=True)  # Empêche l'affichage "utilisé /tickets"
+        await interaction.response.defer(ephemeral=True)
         await interaction.channel.send(embed=embed, view=view)
         await interaction.delete_original_response()
 

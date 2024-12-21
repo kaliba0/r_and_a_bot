@@ -59,9 +59,9 @@ class PayPalCog(commands.Cog):
         embed.add_field(
             name='\u200B\nPayPal Instructions:',
             value=(
-                "**<:verif:1307116862919671808> Do not add any __NOTES__ to the payment**\n"
-                "**<:verif:1307116862919671808> SEND THROUGH __FRIENDS AND FAMILY__ ONLY**\n"
-                "**<:verif:1307116862919671808> Once sent, take a __screenshot of the Payment Summary__**\n\u200b\n\u200b"
+                "**<:verif:1320120193388777553> Do not add any __NOTES__ to the payment**\n"
+                "**<:verif:1320120193388777553> SEND THROUGH __FRIENDS AND FAMILY__ ONLY**\n"
+                "**<:verif:1320120193388777553> Once sent, take a __screenshot of the Payment Summary__**\n\u200b\n\u200b"
             ),
             inline=False
         )
@@ -70,8 +70,8 @@ class PayPalCog(commands.Cog):
         embed.add_field(
             name='\u200B\nLTC Instructions:',
             value=(
-                "**<:verif:1307116862919671808> Do not add any __NOTES__ to the transaction**\n"
-                "**<:verif:1307116862919671808> Once sent, take a __screenshot of the transaction confirmation__**\n"
+                "**<:verif:1320120193388777553> Do not add any __NOTES__ to the transaction**\n"
+                "**<:verif:1320120193388777553> Once sent, take a __screenshot of the transaction confirmation__**\n"
             ),
             inline=False
         )

@@ -81,7 +81,6 @@ class GameModal(Modal):
             ))
             await logs_channel.send(embed=log_embed)
 
-        await interaction.followup.send("Your request has been processed! Please follow the instructions in the ticket channel.", ephemeral=True)
 
 
 class ServiceSelectMenu(Select):
@@ -91,8 +90,8 @@ class ServiceSelectMenu(Select):
         self.ticket_channel = ticket_channel
         self.user = user
         options = [
-            discord.SelectOption(label="Sell an account", value="sell an account", description="Sell a game account", emoji="<:arrowright:1316414550546845861>"),
-            discord.SelectOption(label="Buy an account", value="buy an account", description="Buy a game account", emoji="<:arrowleft:1316414511502327859>")
+            discord.SelectOption(label="Sell an account", value="sell an account", description="Sell a game account", emoji="<:arrowright:1320105230716633088>"),
+            discord.SelectOption(label="Buy an account", value="buy an account", description="Buy a game account", emoji="<:arrowleft:1320105190954893322>")
         ]
         super().__init__(placeholder="Select an account service...", min_values=1, max_values=1, options=options)
 

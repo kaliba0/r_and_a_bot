@@ -106,18 +106,17 @@ class QuantityModal(Modal):
         if logs:
             e = discord.Embed(color=0x000000, description=f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {self.ticket_channel.mention} ```{self.user.name} | {platform.title()} {service.title()} | {price_str}```")
             await logs.send(embed=e)
-        await interaction.followup.send("Your order has been processed! Please follow the instructions in the ticket channel.", ephemeral=True)
 
 class ServiceSelectMenu(Select):
     def __init__(self, admin_role_id, ticket_channel, user):
         self.admin_role_id, self.ticket_channel, self.user = admin_role_id, ticket_channel, user
         opts = [
-            discord.SelectOption(label="TikTok Followers", value="tiktok_followers", description="Increase your TikTok followers"),
-            discord.SelectOption(label="TikTok Likes", value="tiktok_likes", description="Boost your TikTok likes"),
-            discord.SelectOption(label="TikTok Views", value="tiktok_views", description="Get more TikTok views"),
-            discord.SelectOption(label="Instagram Followers", value="instagram_followers", description="Gain Instagram followers"),
-            discord.SelectOption(label="Instagram Likes", value="instagram_likes", description="Boost your Instagram likes"),
-            discord.SelectOption(label="Instagram Views", value="instagram_views", description="Increase Instagram views")
+            discord.SelectOption(emoji="<:tiktok:1320099361069203487>", label="TikTok Followers", value="tiktok_followers", description="Increase your TikTok followers"),
+            discord.SelectOption(emoji="<:tiktok:1320099361069203487>", label="TikTok Likes", value="tiktok_likes", description="Boost your TikTok likes"),
+            discord.SelectOption(emoji="<:tiktok:1320099361069203487>", label="TikTok Views", value="tiktok_views", description="Get more TikTok views"),
+            discord.SelectOption(emoji="<:insta:1320099401556951052>", label="Instagram Followers", value="instagram_followers", description="Gain Instagram followers"),
+            discord.SelectOption(emoji="<:insta:1320099401556951052>", label="Instagram Likes", value="instagram_likes", description="Boost your Instagram likes"),
+            discord.SelectOption(emoji="<:insta:1320099401556951052>", label="Instagram Views", value="instagram_views", description="Increase Instagram views")
         ]
         super().__init__(placeholder="Select a service...", min_values=1, max_values=1, options=opts)
 

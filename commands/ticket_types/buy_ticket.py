@@ -187,14 +187,13 @@ class BanModal(Modal):
                 f"```{self.user.name} | {service_display} | {price_str}```"
             ))
             await logs_channel.send(embed=l_embed)
-        await interaction.followup.send("Your order has been processed! Please follow the instructions in the ticket channel.", ephemeral=True)
 
 class ProductSelectMenu(Select):
     def __init__(self, admin_role_id: int, tickets_cat_id: str, ticket_channel: discord.TextChannel, user: discord.Member):
         self.admin_role_id, self.tickets_cat_id, self.ticket_channel, self.user = admin_role_id, tickets_cat_id, ticket_channel, user
         options = [
-            discord.SelectOption(label="n1tro monthly", value="n1tro monthly", description="Buy monthly nitro", emoji="💎"),
-            discord.SelectOption(label="server b00sts", value="server b00sts", description="Buy server boosts", emoji="🚀"),
+            discord.SelectOption(label="n1tro monthly", value="n1tro monthly", description="Buy monthly nitro", emoji="<a:nitro:1320099432234225674>"),
+            discord.SelectOption(label="server b00sts", value="server b00sts", description="Buy server boosts", emoji="<:boost:1320102670844821637>"),
             discord.SelectOption(label="movies", value="movies", description="Buy a movie", emoji="🎬"),
             discord.SelectOption(label="bs account ban", value="bs account ban", description="Ban a BS account", emoji="🚫")
         ]
